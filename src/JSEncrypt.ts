@@ -139,6 +139,19 @@ export default class JSEncrypt {
     }
 
     /**
+     * @param {string} signature 16 进制表示的原始签名信息
+     * @return {string} 解密后的信息, 也以16进制表示
+     * @public
+     */
+    public rawVerify(signature:string):string|false {
+        try {
+            return this.getKey().rawVerify(signature);
+        } catch (ex) {
+            return false;
+        }
+    }
+
+    /**
      * Getter for the current JSEncryptRSAKey object. If it doesn't exists a new object
      * will be created and returned
      * @param {callback} [cb] the callback to be called if we want the key to be generated

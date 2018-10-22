@@ -317,6 +317,16 @@ export class RSAKey {
         return digest == digestMethod(text).toString();
     }
 
+    public rawVerify(signature:string):string {
+        const c = parseBigInt(signature, 16);
+        const m = this.doPublic(c);
+        if (m == null) {
+            return null;
+        }
+        const h = m.toString(16).replace(/^1f+00/, "").toUpperCase();
+        return h;
+    }
+
     //#endregion PUBLIC
 
     protected n:BigInteger;

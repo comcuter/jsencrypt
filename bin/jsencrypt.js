@@ -3078,6 +3078,15 @@ var RSAKey = /** @class */ (function () {
         var digest = removeDigestHeader(unpadded);
         return digest == digestMethod(text).toString();
     };
+    RSAKey.prototype.rawVerify = function (signature) {
+        var c = parseBigInt(signature, 16);
+        var m = this.doPublic(c);
+        if (m == null) {
+            return null;
+        }
+        var h = m.toString(16).replace(/^1f+00/, "").toUpperCase();
+        return h;
+    };
     return RSAKey;
 }());
 // Undo PKCS#1 (type 2, random) padding and, if valid, return the plaintext
@@ -5252,6 +5261,19 @@ var JSEncrypt = /** @class */ (function () {
         // Return the decrypted 'digest' of the signature.
         try {
             return this.getKey().verify(str, b64tohex(signature), digestMethod);
+        }
+        catch (ex) {
+            return false;
+        }
+    };
+    /**
+     * @param {string} signature 16 进制表示的原始签名信息
+     * @return {string} 解密后的信息, 也以16进制表示
+     * @public
+     */
+    JSEncrypt.prototype.rawVerify = function (signature) {
+        try {
+            return this.getKey().rawVerify(signature);
         }
         catch (ex) {
             return false;
